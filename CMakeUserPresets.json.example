@@ -1,0 +1,28 @@
+{
+  "//": "Copy this file to CMakeUserPresets.json (already .gitignore'd) and edit the",
+  "//": "CMAKE_PREFIX_PATH below to point at YOUR local Qt install. This lets you pin",
+  "//": "your own machine's Qt path without touching the tracked CMakePresets.json.",
+  "//": "If QT_BIN_DIR is already set as an environment variable, or Qt lives at the",
+  "//": "default C:/Qt/<version>/msvc2022_64 location, you likely don't need this file at all.",
+
+  "version": 4,
+
+  "configurePresets": [
+    {
+      "name": "windows-msvc-local",
+      "inherits": "windows-msvc",
+      "displayName": "Windows MSVC (local Qt override)",
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "C:/Qt/6.11.1/msvc2022_64"
+      }
+    },
+    {
+      "name": "linux-ninja-local",
+      "inherits": "linux-ninja",
+      "displayName": "Linux Ninja (local Qt override)",
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "/home/you/Qt/6.11.1/gcc_64"
+      }
+    }
+  ]
+}

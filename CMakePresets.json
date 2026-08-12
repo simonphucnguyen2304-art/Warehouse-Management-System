@@ -1,0 +1,70 @@
+{
+  "version": 4,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+
+  "configurePresets": [
+    {
+      "name": "windows-msvc",
+      "displayName": "Windows x64 - MSVC (Visual Studio 2022)",
+      "description": "Uses the Visual Studio generator directly, so cl.exe is picked up correctly no matter which terminal or IDE launches CMake - no 'Developer Command Prompt' or vcvars sourcing required.",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "installDir": "${sourceDir}/out/install/${presetName}",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "linux-ninja",
+      "displayName": "Linux - Ninja (GCC/Clang)",
+      "description": "Standard Ninja build using whatever C++ compiler is on PATH.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "macos-ninja",
+      "displayName": "macOS - Ninja (Clang)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "windows-msvc",
+      "configurePreset": "windows-msvc",
+      "configuration": "Debug"
+    },
+    {
+      "name": "linux-ninja",
+      "configurePreset": "linux-ninja"
+    },
+    {
+      "name": "macos-ninja",
+      "configurePreset": "macos-ninja"
+    }
+  ]
+}

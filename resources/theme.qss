@@ -1,0 +1,505 @@
+/**
+ * theme.qss
+ * Central application stylesheet - Windows 11 Fluent-inspired base theme.
+ *
+ * Scope of this file (Phase 1 - infrastructure only):
+ *   This provides the app-wide DEFAULT look for widgets that currently have
+ *   NO inline setStyleSheet() call (all three dialogs, plain QPushButtons,
+ *   inputs, etc). It intentionally does NOT try to override the ~40 existing
+ *   inline setStyleSheet() calls in MainWindow.cpp (sidebar, page titles,
+ *   colored action buttons, table headers) - a widget-level setStyleSheet()
+ *   always wins over this application-level sheet for that widget, so
+ *   nothing currently on-screen changes shape/color yet. Migrating those
+ *   inline blocks to use this file happens component-by-component in
+ *   Phase 2/3, per the roadmap.
+ *
+ * Design tokens (Fluent-ish, kept close to the app's existing brand green
+ * so Phase 1 doesn't silently re-brand anything - open to revisiting the
+ * accent in Phase 2):
+ *
+ *   Surface / layer 0 (window bg)      #F3F3F3
+ *   Surface / layer 1 (cards, dialogs) #FFFFFF
+ *   Border (subtle)                    #E1E1E1
+ *   Border (stronger / hover)          #D1D1D1
+ *   Text - primary                     #201F1E
+ *   Text - secondary                   #605E5C
+ *   Text - disabled                    #A19F9D
+ *   Accent (brand green)               #00B96B
+ *   Accent - hover                     #00A25E
+ *   Accent - pressed                   #00874F
+ *   Danger (destructive actions)       #E53E3E
+ *   Radius - small (inputs, chips)     4px
+ *   Radius - medium (buttons)          6px
+ *   Radius - large (cards, dialogs)    8px
+ *   Spacing unit                       8px  (padding built in multiples of it)
+ */
+
+/* ---------------------------------------------------------------------- */
+/* Global                                                                  */
+/* ---------------------------------------------------------------------- */
+
+* {
+    font-family: "Segoe UI", "Segoe UI Variable", sans-serif;
+}
+
+QMainWindow,
+QDialog {
+    /* Deliberately cooler/darker than a bare #F3F3F3 - Qt's QSS has no
+       box-shadow support, so card separation has to come from color
+       contrast alone rather than elevation/shadow. */
+    background-color: #E7EAF0;
+}
+
+QWidget {
+    color: #201F1E;
+    font-size: 13px;
+}
+
+QLabel {
+    background: transparent;
+}
+
+QToolTip {
+    background-color: #201F1E;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Shell - Sidebar navigation (#sidebarMenu)                               */
+/* Phase 2: migrated out of MainWindow.cpp's inline setStyleSheet() call.  */
+/* Kept as its own dark surface (distinct from the light content area) -   */
+/* this is a deliberate "NavigationView" accent panel, not a bug.          */
+/* ---------------------------------------------------------------------- */
+
+QListWidget#sidebarMenu {
+    background-color: #1E2640;
+    color: #AEB7C2;
+    font-size: 14px;
+    border: none;
+    border-radius: 0px;
+    padding: 8px 0;
+    outline: none;
+}
+
+QListWidget#sidebarMenu::item {
+    padding: 12px 20px;
+    margin: 2px 8px;
+    border-radius: 6px;
+}
+
+QListWidget#sidebarMenu::item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #FFFFFF;
+}
+
+QListWidget#sidebarMenu::item:selected {
+    background-color: #00B96B;
+    color: #FFFFFF;
+    font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Shell - Page headers                                                    */
+/* Phase 2: replaces 6 duplicated inline setStyleSheet() calls across the  */
+/* 4 pages. Also fixes a real contrast bug: titles were previously         */
+/* "color: #FFFFFF" (white) sitting directly on the light page background */
+/* with nothing dark behind them, making them effectively invisible.       */
+/* Usage in C++: label->setProperty("class", "pageTitle");                 */
+/* ---------------------------------------------------------------------- */
+
+QLabel[class="pageTitle"] {
+    font-size: 22px;
+    font-weight: 600;
+    color: #201F1E;
+}
+
+QLabel[class="sectionTitle"] {
+    font-size: 16px;
+    font-weight: 600;
+    color: #201F1E;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Buttons (default/secondary style - dialogs, QDialogButtonBox, any       */
+/* QPushButton not given a custom color via the buttonStyle() helper)      */
+/* ---------------------------------------------------------------------- */
+
+QPushButton {
+    background-color: #FFFFFF;
+    color: #201F1E;
+    border: 1px solid #D1D1D1;
+    border-radius: 6px;
+    padding: 8px 16px;
+    min-height: 20px;
+}
+
+QPushButton:hover {
+    background-color: #F5F5F5;
+    border-color: #B3B3B3;
+}
+
+QPushButton:pressed {
+    background-color: #E8E8E8;
+}
+
+QPushButton:disabled {
+    background-color: #F3F3F3;
+    color: #A19F9D;
+    border-color: #E1E1E1;
+}
+
+QPushButton:focus {
+    border-color: #00B96B;
+}
+
+/* The primary/default action in a dialog (e.g. OK, Save, Apply Filter)
+   gets the accent treatment so there's always one clear primary action. */
+QPushButton:default {
+    background-color: #00B96B;
+    color: #FFFFFF;
+    border: 2px solid transparent;
+    font-weight: 600;
+}
+
+QPushButton:default:hover {
+    background-color: #00A25E;
+}
+
+QPushButton:default:pressed {
+    background-color: #00874F;
+}
+
+QPushButton:default:focus {
+    border-color: #201F1E;
+}
+
+QDialogButtonBox QPushButton {
+    min-width: 88px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Inputs                                                                  */
+/* ---------------------------------------------------------------------- */
+
+QLineEdit,
+QComboBox,
+QSpinBox,
+QDoubleSpinBox,
+QDateEdit,
+QTextEdit,
+QPlainTextEdit {
+    background-color: #FFFFFF;
+    border: 1px solid #D1D1D1;
+    border-radius: 4px;
+    padding: 6px 10px;
+    min-height: 20px;
+    selection-background-color: #00B96B;
+    selection-color: #FFFFFF;
+}
+
+QLineEdit:hover,
+QComboBox:hover,
+QSpinBox:hover,
+QDoubleSpinBox:hover,
+QDateEdit:hover {
+    border-color: #B3B3B3;
+}
+
+QLineEdit:focus,
+QComboBox:focus,
+QSpinBox:focus,
+QDoubleSpinBox:focus,
+QDateEdit:focus,
+QTextEdit:focus,
+QPlainTextEdit:focus {
+    border: 1.5px solid #00B96B;
+}
+
+QLineEdit:disabled,
+QComboBox:disabled,
+QSpinBox:disabled,
+QDoubleSpinBox:disabled,
+QDateEdit:disabled {
+    background-color: #F3F3F3;
+    color: #A19F9D;
+    border-color: #E1E1E1;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 24px;
+}
+
+QComboBox::down-arrow {
+    image: url(:/icons/sort_desc.svg);
+    width: 10px;
+    height: 10px;
+}
+
+QComboBox::down-arrow:disabled {
+    image: none;
+}
+
+QSpinBox::up-button, QSpinBox::down-button,
+QDoubleSpinBox::up-button, QDoubleSpinBox::down-button,
+QDateEdit::up-button, QDateEdit::down-button {
+    border: none;
+    width: 18px;
+}
+
+QSpinBox::up-arrow, QDoubleSpinBox::up-arrow, QDateEdit::up-arrow {
+    image: url(:/icons/sort_asc.svg);
+    width: 8px;
+    height: 8px;
+}
+
+QSpinBox::down-arrow, QDoubleSpinBox::down-arrow, QDateEdit::down-arrow {
+    image: url(:/icons/sort_desc.svg);
+    width: 8px;
+    height: 8px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Calendar popup (QDateEdit with calendarPopup(true))                    */
+/* Previously entirely unstyled, at the mercy of native/OS rendering -     */
+/* this is what caused the month/year dropdown to show dark-on-dark text.  */
+/* Forcing explicit light-theme colors here regardless of OS dark mode.    */
+/* ---------------------------------------------------------------------- */
+
+QCalendarWidget {
+    background-color: #FFFFFF;
+    min-width: 320px;
+    min-height: 280px;
+}
+
+QCalendarWidget QWidget#qt_calendar_navigationbar {
+    background-color: #F7FAFC;
+}
+
+QCalendarWidget QToolButton {
+    background-color: transparent;
+    color: #201F1E;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 13px;
+    font-weight: 600;
+    icon-size: 14px 14px;
+}
+
+QCalendarWidget QToolButton:hover {
+    background-color: #E6F7EF;
+    color: #201F1E;
+    font-size: 13px;
+}
+
+QCalendarWidget QToolButton::menu-indicator {
+    image: none;
+}
+
+QCalendarWidget QMenu {
+    background-color: #FFFFFF;
+    color: #201F1E;
+    border: 1px solid #D1D1D1;
+}
+
+QCalendarWidget QMenu::item {
+    padding: 6px 20px;
+    color: #201F1E;
+    background-color: transparent;
+}
+
+QCalendarWidget QMenu::item:selected {
+    background-color: #00B96B;
+    color: #FFFFFF;
+}
+
+QCalendarWidget QSpinBox {
+    color: #201F1E;
+    background-color: #FFFFFF;
+    min-height: 20px;
+}
+
+QCalendarWidget QAbstractItemView {
+    background-color: #FFFFFF;
+    color: #201F1E;
+    font-size: 13px;
+    selection-background-color: #00B96B;
+    selection-color: #FFFFFF;
+    outline: none;
+}
+
+QCalendarWidget QAbstractItemView:disabled {
+    color: #A19F9D;
+}
+
+QCalendarWidget QAbstractItemView::item:disabled {
+    color: #A19F9D;
+}
+
+QCalendarWidget QAbstractItemView::item:hover {
+    background-color: #E6F7EF;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Checkboxes                                                              */
+/* ---------------------------------------------------------------------- */
+
+QCheckBox {
+    spacing: 8px;
+}
+
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #B3B3B3;
+    border-radius: 3px;
+    background-color: #FFFFFF;
+}
+
+QCheckBox::indicator:hover {
+    border-color: #00B96B;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #00B96B;
+    border-color: #00B96B;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Grouping containers                                                     */
+/* ---------------------------------------------------------------------- */
+
+QGroupBox {
+    border: 1px solid #E1E1E1;
+    border-radius: 8px;
+    margin-top: 14px;
+    padding: 12px;
+    font-weight: 600;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 6px;
+    color: #605E5C;
+}
+
+QTabWidget::pane {
+    border: 1px solid #E1E1E1;
+    border-radius: 8px;
+    top: -1px;
+}
+
+QTabBar::tab {
+    background: transparent;
+    color: #605E5C;
+    padding: 8px 16px;
+    border: none;
+    border-bottom: 2px solid transparent;
+}
+
+QTabBar::tab:selected {
+    color: #201F1E;
+    font-weight: 600;
+    border-bottom: 2px solid #00B96B;
+}
+
+QTabBar::tab:hover:!selected {
+    color: #201F1E;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Tables / headers                                                        */
+/* NOTE: no border-radius here on purpose. Qt does not clip a QTableView's */
+/* internal viewport/header to the widget's own rounded border, so a       */
+/* rounded QTableView shows square content corners poking past the round   */
+/* frame on every page. This property is NOT re-declared by any of the     */
+/* per-table inline stylesheets either, so it silently applied everywhere  */
+/* until now. Tables are square by design; a "rounded card" look for a     */
+/* table means wrapping it in its own QFrame (Phase 3 structural change).  */
+/* ---------------------------------------------------------------------- */
+
+QTableView {
+    background-color: #FFFFFF;
+    alternate-background-color: #FAFAFA;
+    gridline-color: #E1E1E1;
+    border: 1px solid #E1E1E1;
+    selection-background-color: #E6F7EF;
+    selection-color: #201F1E;
+}
+
+QHeaderView::section {
+    background-color: #F3F3F3;
+    color: #605E5C;
+    padding: 8px;
+    border: none;
+    border-bottom: 1px solid #E1E1E1;
+    font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Lists (fallback default - the sidebar keeps its own inline dark theme)  */
+/* ---------------------------------------------------------------------- */
+
+QListWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #E1E1E1;
+    border-radius: 8px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Scrollbars - thin, flat, Fluent-style                                  */
+/* ---------------------------------------------------------------------- */
+
+QScrollBar:vertical {
+    background: transparent;
+    width: 10px;
+    margin: 2px;
+}
+
+QScrollBar::handle:vertical {
+    background: #C7C7C7;
+    border-radius: 5px;
+    min-height: 24px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #A6A6A6;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar:horizontal {
+    background: transparent;
+    height: 10px;
+    margin: 2px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #C7C7C7;
+    border-radius: 5px;
+    min-width: 24px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #A6A6A6;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Message boxes                                                           */
+/* ---------------------------------------------------------------------- */
+
+QMessageBox {
+    background-color: #FFFFFF;
+}
